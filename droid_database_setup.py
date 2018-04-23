@@ -17,6 +17,8 @@ class User(Base):
     picture = Column(String(250))
 
 """ Droid types: Maintenance, Astromech, Protocal, Battle """
+
+
 class Droid(Base):
     __tablename__ = 'droid'
 
@@ -29,23 +31,23 @@ class Droid(Base):
     """Return object data in easily serializeable format"""
     @property
     def serialize(self):
-       return {
-           'name'         : self.name,
-           'id'           : self.id,
-           'type'         : self.droid_type,
-           'creator'      : self.user_id
-       }
+        return {'name': self.name,
+                'id': self.id,
+                'type': self.droid_type,
+                'creator': self.user_id}
 
 
 """ Types: Tool, Weapon, Software, Hardware """
+
+
 class DroidAccessories(Base):
     __tablename__ = 'droid_item'
 
-    name =Column(String(80), nullable = False)
-    id = Column(Integer, primary_key = True)
+    name = Column(String(80), nullable=False)
+    id = Column(Integer, primary_key=True)
     accessory_type = Column(String(250))
     description = Column(String(250))
-    droid_id = Column(Integer,ForeignKey('droid.id'))
+    droid_id = Column(Integer, ForeignKey('droid.id'))
     droid = relationship(Droid)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
@@ -53,12 +55,10 @@ class DroidAccessories(Base):
     """Return object data in easily serializeable format"""
     @property
     def serialize(self):
-       return {
-            'name'  : self.name,
-            'id'    : self.id,
-            'description'   : self.description,
-            'accessory_type'    : self.accessory_type,
-       }
+        return {'name': self.name,
+                'id': self.id,
+                'description': self.description,
+                'accessory_type': self.accessory_type}
 
 
 engine = create_engine('sqlite:///droidaccessorieswithusers.db')
