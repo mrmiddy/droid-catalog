@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Matt Midcap">
+  </head>
+
+  <body>
+<!-- This file is to display all droids to a logged in user. -->
+
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+	<div class="row divider blue">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner main">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+			<h1>Accessorize Your Droids!</h1>
+		</div>
+	</div>
+
+	<div class = 'flash'>
+		{% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        	{% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        	{% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+	</div>
+
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 padding-none">
+			<a href="{{url_for('newDroid')}}">
+				<button class="btn btn-default" id="new-droid">
+					<span class="glyphicon glyphicon-print" aria-hidden="true">
+					</span>Add Droid
+				</button>
+			</a>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-4 col-xs center">
+			<h2>Droid Inventory</h2>
+				{% for droid in droids %}
+					<a href = "{{url_for('showSelectedDroid', droid_id = droid.id)}}">
+						<div class="row">
+							<div class="col-md-1"></div>
+							<div class="col-md-10 droid-list">
+								<h3>{{droid.name}}</h3>
+							</div>
+							<div class="col-md-1"></div>
+						</div>
+					</a>
+				{% endfor %}
+		</div>
+	<div class="col-sm-1 col-xs center"></div>
+
+	<div class="col-sm-7 col-xs center">
+		<h2>Droid Accessories</h2>
+			{% for item in items %}
+				<a href = "{{url_for('editDroidAccessory',
+            droid_id = item.droid_id, item_id = item.id)}}">
+					<div class="row">
+						<div class="col-md-1"></div>
+						<div class="col-md-10 droid-list">
+							<h3>{{item.name}} <i>({{item.accessory_type}})</i></h3>
+						</div>
+						<div class="col-md-1"></div>
+					</div>
+				</a>
+			{% endfor %}
+		</div>
+</div><!-- End of row -->
+
+<div class="row padding-top padding-bottom">
+	<div class="col-md-1"></div>
+	<div class="col-md-10 padding-none"></div>
+	<div class="col-md-1"></div>
+</div>
+
+{% endblock %}
+
+</body>
+</html>

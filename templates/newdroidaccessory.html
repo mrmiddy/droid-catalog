@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Matt Midcap">
+  </head>
+
+<!-- This file is to display all droids to a public user (not logged in). -->
+<body>
+
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider blue">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner main">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>New Droid Accessory</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="{{url_for('newDroidAccessory', droid_id = droid_id)}}" method = "post">
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input type ="text" maxlength="50" class="form-control" name="name" placeholder="Name of accessory">
+
+					<label for="description">Description:</label>
+					<textarea
+						class="form-control"
+						maxlength="250"
+						rows="3"
+						name="description"
+						placeholder="Accessory description">
+					</textarea>
+
+					<div class="radio">
+						<label>
+							<input type="radio" name="accessory_type" id="type1" value="Tool" required>Tool
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="accessory_type" id="type2" value="Weapon" required>Weapon
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="accessory_type" id="type3" value="Software" required>Software
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="accessory_type" id="type4" value="Hardware" required>Hardware
+						</label>
+					</div>
+					<div class="padding-bottom"></div>
+						<button type="submit" class="btn btn-default" id="submit" type="submit">
+							<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save </button>
+				</div>
+			</form>
+			<a href = "{{url_for('showItem', droid_id = droid_id)}}">
+				<button class="btn btn-default delete">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel </button>
+			</a>
+		</div>
+	</div>
+
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 padding-none"></div>
+		<div class="col-md-1"></div>
+	</div>
+
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Matt Midcap">
+  </head>
+
+<!-- Add a new droid (user must be logged in). -->
+
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider blue">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner main">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>Add New Droid</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+					<label for="name">Name:</label>
+					<input type ="text" class="form-control" maxlength="100" name="name" required>
+
+					<div class="radio">
+						<label>
+							<input type="radio" name="droid_type" id="type1" value="Maintenance" required>Maintenance
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="droid_type" id="type2" value="Astromech" required>Astromech
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="droid_type" id="type3" value="Protocal" required>Protocal
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="droid_type" id="type4" value="Battle" required>Battle
+						</label>
+					</div>
+					<div class="padding-bottom"></div>
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-tower" aria-hidden="true"></span> Create </button>
+				</div>
+			</form>
+			<a href = "{{url_for('showDroids')}}">
+				<button class="btn btn-default delete">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel </button>
+			</a>
+		</div>
+	</div> <!-- End of row -->
+
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 padding-none"></div>
+		<div class="col-md-1"></div>
+	</div>
+
+{% endblock %}
+
+</body>
+</html>
