@@ -1,6 +1,10 @@
 # coding=utf-8
 
-import random, string, httplib2, json, requests
+import random
+import string
+import httplib2
+import json
+import requests
 
 from flask import Flask, render_template, request, redirect, jsonify
 from flask import url_for, flash, make_response
@@ -36,6 +40,8 @@ session = DBSession()
 
 
 """ Create anti-forgery state token """
+
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -45,6 +51,8 @@ def showLogin():
 
 
 """ Used to connect via Google. """
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     """ Validate state token """
@@ -130,14 +138,16 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px; " '
-    output += ' "-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;" '
+    output += ' " -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
 
 """ User Helper Functions """
+
+
 def createUser(login_session):
     newUser = User(
         name=login_session['username'],
@@ -148,9 +158,11 @@ def createUser(login_session):
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
 
+
 def getUserInfo(user_id):
     user = session.query(User).filter_by(id=user_id).one()
     return user
+
 
 def getUserID(email):
     try:
@@ -160,12 +172,15 @@ def getUserID(email):
         return None
 
 
-""" DISCONNECT - Revoke a current user's token and reset their login_session """
+""" DISCONNECT: Revoke a current user's token and reset their login_session """
+
+
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps(
+            'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
@@ -176,12 +191,15 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps(
+            'Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
 
 """ JSON API to show all droids """
+
+
 @app.route('/droid/JSON')
 def droidsJSON():
     droids = session.query(Droid).all()
@@ -189,6 +207,8 @@ def droidsJSON():
 
 
 """ JSON API to view all Droid info """
+
+
 @app.route('/droid/<int:droid_id>/item/JSON')
 def droidItemsJSON(droid_id):
     droid = session.query(Droid).filter_by(id=droid_id).one()
@@ -198,6 +218,8 @@ def droidItemsJSON(droid_id):
 
 
 """ JSON API to view one specific Droid's accessories """
+
+
 @app.route('/droid/<int:droid_id>/item/<int:item_id>/JSON')
 def accessoryJSON(droid_id, item_id):
     Droid_Accessory = session.query(
@@ -206,73 +228,79 @@ def accessoryJSON(droid_id, item_id):
 
 
 """ Show all droids """
+
+
 @app.route('/')
 @app.route('/droid')
 def showDroids():
     droids = session.query(Droid).order_by(asc(Droid.name))
     items = session.query(DroidAccessories).all()
     if 'username' not in login_session:
-        return render_template(
-            'publicdroids.html',
-            droids = droids,
-            items = items)
+        return render_template('publicdroids.html', droids=droids,
+                               items=items)
     else:
-        return render_template('droids.html', droids = droids, items = items)
+        return render_template('droids.html', droids=droids, items=items)
 
 
 """ Show all droids, and the selected droid with it's accessories. """
+
+
 @app.route('/droid/<int:droid_id>/selectdroid')
 def showSelectedDroid(droid_id):
-  allDroids = session.query(Droid).order_by(asc(Droid.name))
-  selectedDroid = session.query(Droid).filter_by(id=droid_id).one()
-  creator = getUserInfo(selectedDroid.user_id)
-  items = session.query(DroidAccessories).filter_by(droid_id=droid_id).all()
-  if 'username' not in login_session or creator.id != login_session['user_id']:
-    return render_template('publicdroidselected.html',
-      items=items,
-      allDroids = allDroids,
-      selectedDroid = selectedDroid,
-      creator = creator)
-  else:
-    return render_template('droidselected.html',
-      items=items,
-      allDroids = allDroids,
-      selectedDroid = selectedDroid,
-      creator = creator)
+    allDroids = session.query(Droid).order_by(asc(Droid.name))
+    selectedDroid = session.query(Droid).filter_by(id=droid_id).one()
+    creator = getUserInfo(selectedDroid.user_id)
+    items = session.query(DroidAccessories).filter_by(droid_id=droid_id).all()
+    if 'username' not in login_session or creator.id != login_session[
+       'user_id']:
+            return render_template('publicdroidselected.html',
+                                   items=items,
+                                   allDroids=allDroids,
+                                   selectedDroid=selectedDroid,
+                                   creator=creator)
+    else:
+        return render_template('droidselected.html',
+                               items=items,
+                               allDroids=allDroids,
+                               selectedDroid=selectedDroid,
+                               creator=creator)
 
 
 """ Show a droid with it's accessories (if they have them) """
+
+
 @app.route('/droid/<int:droid_id>/')
 @app.route('/droid/<int:droid_id>/accessories/')
 def showItem(droid_id):
-  droid = session.query(Droid).filter_by(id=droid_id).one()
-  creator = getUserInfo(droid.user_id)
-  items = session.query(DroidAccessories).filter_by(
-    droid_id=droid_id).all()
-  if 'username' not in login_session or creator.id != login_session['user_id']:
-    return render_template(
-      'publicaccessorylist.html',
-      items=items,
-      droid=droid,
-      creator=creator)
-  else:
-    return render_template(
-      'accessorylist.html',
-      items=items,
-      droid=droid,
-      creator=creator)
+    droid = session.query(Droid).filter_by(id=droid_id).one()
+    creator = getUserInfo(droid.user_id)
+    items = session.query(DroidAccessories).filter_by(
+        droid_id=droid_id).all()
+    if 'username' not in login_session or creator.id != login_session[
+       'user_id']:
+            return render_template('publicaccessorylist.html',
+                                   items=items,
+                                   droid=droid,
+                                   creator=creator)
+    else:
+        return render_template('accessorylist.html',
+                               items=items,
+                               droid=droid,
+                               creator=creator)
 
 
 """ Create a new droid """
+
+
 @app.route('/droid/new/', methods=['GET', 'POST'])
 def newDroid():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
         newDroid = Droid(
-            name=request.form['name'],
-            droid_type=request.form['droid_type'],
-            user_id=login_session['user_id'])
+                        name=request.form['name'],
+                        droid_type=request.form['droid_type'],
+                        user_id=login_session['user_id'])
         session.add(newDroid)
         flash('New Droid %s Successfully Created' % newDroid.name)
         session.commit()
@@ -282,6 +310,8 @@ def newDroid():
 
 
 """ Edit a droid """
+
+
 @app.route('/droid/<int:droid_id>/edit/', methods=['GET', 'POST'])
 def editDroid(droid_id):
     editedDroid = session.query(
@@ -304,6 +334,8 @@ def editDroid(droid_id):
 
 
 """ Create a new droid accessory """
+
+
 @app.route('/droid/<int:droid_id>/accessory/new/', methods=['GET', 'POST'])
 def newDroidAccessory(droid_id):
     if 'username' not in login_session:
@@ -333,8 +365,10 @@ def newDroidAccessory(droid_id):
         return render_template('newdroidaccessory.html', droid_id=droid_id)
 
 """ Edit droid accessory """
-@app.route('/droid/<int:droid_id>/accessory/<int:item_id>/edit',
-    methods=['GET', 'POST'])
+
+
+@app.route('/droid/<int:droid_id>/accessory/<int:item_id>/edit', methods=[
+    'GET', 'POST'])
 def editDroidAccessory(droid_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -366,8 +400,10 @@ def editDroidAccessory(droid_id, item_id):
 
 
 """ Delete a droid accessory """
-@app.route('/droid/<int:droid_id>/accessory/<int:item_id>/delete',
-    methods=['GET', 'POST'])
+
+
+@app.route('/droid/<int:droid_id>/accessory/<int:item_id>/delete', methods=[
+    'GET', 'POST'])
 def deleteDroidAccessory(droid_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
@@ -391,6 +427,8 @@ def deleteDroidAccessory(droid_id, item_id):
 
 
 """ Disconnect (based on provider, but none yet except Google) """
+
+
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
