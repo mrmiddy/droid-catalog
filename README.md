@@ -31,7 +31,7 @@ The python code is to be run from a vagrant or similar command line application.
 Place the catalog.py file in the folder (preferably "catalog"), and place the
 /static and /templates directories and their contents in the same directory.
 
-Now from the command line type, **python database_setup.py** to initialize the
+Now from the command line type, **python droid_database_setup.py** to initialize the
 database.
 
 Type **python lotsofdroids.py** if you would like to pre-populate the database
